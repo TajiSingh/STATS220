@@ -17,7 +17,8 @@
 ### Useful Resources:
 To learn more about the magic package [Magic Package](https://cran.r-project.org/web/packages/magick/vignettes/intro.html)
 
-A meme that captures how I currently feel about my university studies is ![](https://tenor.com/en-GB/view/caos-bob-esponja-crisis-patricio-gif-23199341)
+A meme that captures how I currently feel about my university studies is ![](https://github.com/user-attachments/assets/1e75fd7c-d85e-412c-be87-61c20234e5f2)
+
 
 
 
