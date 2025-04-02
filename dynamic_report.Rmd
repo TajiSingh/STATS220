@@ -1,0 +1,131 @@
+---
+title: My dynamic report
+output: html_fragment
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, error=FALSE)
+library(tidyverse)
+```
+
+```{css}
+body {
+  font-family: 'Indie Flower', cursive;
+}
+
+h1 {
+  padding-bottom: 10px;
+}
+
+h2 {
+  border: 2px solid #3498db
+}
+```
+
+## Observational Study: Personalized Ad Patterns 
+
+
+**Aim**
+The aim of this  report explores the **` r nrow(latest_data)` ads** observed over personalised data. The occurrance and the certain trends that occur for personlized advertisements across various social media platforms. The variables tracked are include:
+- **Duration**: Seconds before an ad could be skipped (or total time spent).  
+- **Platform**: Social media platforms (e.g., Facebook, YouTube).  
+- **Category**: Product/service type (e.g., Health & Fitness, Technology).  
+The key components we are looking to explore include:
+**KEY COMPONENTS:**
+1. What platforms show the highest number of ads?
+2. Which ad categories are most prevalent in personalized advertisements?
+3. How long do users engage with ads before skipping them? 
+
+
+## The Process of Data Collection:
+- **Source** Ads that were observed over various social media platforms 
+- **Observation** The data was logged after engaging with a personalized advertisement
+- **Methods** The method used to extract data was Google Form, Rstudio and Dynamic RMarkdown Report 
+
+
+
+
+
+```{r}
+csv_url <- "https://docs.google.com/spreadsheets/d/e/2PACX-1vR4Ob7R_pvS4Bu--tfyHxVTpaMtxup_UElzzUTWVkZYo8ss2fSygodhA-_BZNi9kYDo7-181mFHPRql/pub?gid=1933024189&single=true&output=csv"
+logged_data <- read_csv(csv_url)
+
+#Renaming the variables of the data frame logged data using the rename()
+# Rename variables by column position (like the screenshot example)
+latest_data <- logged_data %>%
+  rename(
+    duration = 2,              
+    platform = 3,              
+    category = 4,              
+    targeting_reason = 5,      
+    details = 6                
+  )
+
+```
+
+
+```{r}
+num_ads <- latest_data$duration %>%
+  length()
+
+mean_duration <- latest_data$duration %>%
+  mean(na.rm = TRUE) %>%
+  round(2)
+
+paste0("From a total of ", num_ads, " logged ads, the average duration of ad engagement before skipping was ", mean_duration, " seconds.")
+
+```
+
+
+```{r}
+summary_stats <- latest_data %>%
+  summarise(
+    min_duration = min(duration, na.rm = TRUE),  
+    mean_duration = mean(duration, na.rm = TRUE),  
+    max_duration = max(duration, na.rm = TRUE),     
+    total_obs = n()
+  )
+
+paste0(
+  "From the dataset, there were ", summary_stats$total_obs, " ads logged. ",
+  "The shortest ad duration was ", summary_stats$min_duration, " seconds, ",
+  "the average duration was ", round(summary_stats$mean_duration, 2), " seconds, ",
+  "and the longest ad duration was ", summary_stats$max_duration, " seconds."
+)
+
+```
+
+
+
+
+```{r fig.width = 13, fig.height = 4}
+
+
+category_plot <- latest_data %>%
+  ggplot() +  
+  geom_bar(aes(x = category, fill = category)) +
+  labs(title = "Distribution for Ads by Category",
+    subtitle = "Frequency of logged ad types (where multiple selections allowed)",
+    caption = "Source: Observational Ad Logging",
+    x = "Advertisement Category",
+    y = "Total count")
+
+print(category_plot)
+```
+
+```{r fig.width = 13, fig.height = 4}
+platform_plot <- latest_data %>%
+  ggplot() +
+  geom_bar(aes(x = platform, fill = platform)) +
+  labs(title = "Distribution of Ads by Platform",
+    subtitle = "Frequency of observed Advertisements across Social Media platforms",
+    caption = "Source: Observational Ad Logging",
+    x = "Platform",
+    y = "Total number of Ads")
+
+
+print(platform_plot)
+```
+
+
+
